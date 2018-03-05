@@ -1,51 +1,23 @@
 module.exports = function check( str, bracketsConfig ) {
-  let stack = [];
+  let strLength = str.length;
+  let bracketsConfigLength = bracketsConfig.length;
+  let stack = [],
+    count = 0;
 
-  for ( let i = 0; i < str.length; ++i ) {
-
-    //if it's an opening -- just push it
-    if ( str[ i ] == '{' || str[ i ] == '(' || str[ i ] == '[' || str[ i ] == '|' ) {
-      stack.push( str[ i ] );
-    }
-
-    //if it's a closing -- check if it was open
-    if ( str[ i ] == '}' ) {
-      if ( stack[ stack.length - 1 ] == '{' ) {
-        stack.pop();
-      } else {
-        return false;
+  for ( let i = 0; i < strLength; ++i ) {
+    for ( let j = 0; j < bracketsConfigLength; ++j ) {
+      if ( str[ i ] == bracketsConfig[ j ][ 0 ] ) {
+        stack.push( str[ i ] );
       }
-    }
-
-    if ( str[ i ] == ')' ) {
-      if ( stack[ stack.length - 1 ] == '(' ) {
-        stack.pop();
-      } else {
-        return false;
-      }
-    }
-
-    if ( str[ i ] == ']' ) {
-      if ( stack[ stack.length - 1 ] == '[' ) {
-        stack.pop();
-      } else {
-        return false;
-      }
-    }
-
-    //if it's the second "|" in a row - remove it with the previous
-    if ( str[ i ] == '|' ) {
-      if ( stack[ stack.length - 2 ] == '|' ) {
-        stack.pop();
-        stack.pop();
+      if ( str[ i ] == bracketsConfig[ j ][ 1 ] ) {
+        if ( stack[ stack.length - 1 ] == bracketsConfig[ j ][ 0 ] ) {
+          stack.pop();
+        } else {
+          stack.push( str[ i ] );
+        }
       }
     }
   }
 
-  if ( stack.length == 0 ) {
-    return true;
-  } else {
-    return false;
-  }
-
+  return stack.length == 0 ? true : false;
 }
